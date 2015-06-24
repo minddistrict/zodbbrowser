@@ -55,7 +55,7 @@ def main(args=None):
     except AttributeError:
         support = True
     if support:
-        parser.error('only supports history free databases')
+        parser.error('Only supports history free databases.')
 
     database_file = opts.save
     if not database_file:
@@ -66,7 +66,7 @@ def main(args=None):
         if opts.override and os.path.isfile(opts.save):
             os.unlink(opts.save)
         elif references.checkDatabase():
-            parser.error('database already initialized')
+            parser.error('Database already initialized.')
     references.createDatabase()
     references.analyzeRecords(iter_database(db))
 
@@ -77,9 +77,9 @@ def main(args=None):
 
     if missing_oids:
         # We have missing objects
-        print '{0} missing objects'.format(len(missing_oids))
+        print '{0} missing objects.'.format(len(missing_oids))
         sys.exit(1)
-    print 'no missing objects'
+    print 'No missing objects.'
     sys.exit(0)
 
 
