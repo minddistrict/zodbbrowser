@@ -1,8 +1,8 @@
 Changes
 -------
 
-0.12.1 (unreleased)
-~~~~~~~~~~~~~~~~~~~
+0.12.1-md (2015-06-24)
+~~~~~~~~~~~~~~~~~~~~~~
 
 - Add a script to check a database to see if a class is used as a
   persistent object in it or not or if it is missing.
