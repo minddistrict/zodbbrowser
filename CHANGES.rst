@@ -4,7 +4,7 @@ Changes
 0.12.1+md.2 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Nothing changed yet.
+- Report OID where broken classes are found in the zodbsearch script.
 
 
 0.12.1+md.1 (2015-06-30)
