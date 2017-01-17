@@ -59,6 +59,8 @@ def main(args=None):
                 count_oid += 1
                 sql.write('DELETE FROM object_state WHERE zoid = {};\n'.format(
                     oid))
+                if count_oid % 10000 == 0:
+                    sql.write('COMMIT;\nBEGIN;\n')
                 if compute_blob:
                     blob = compute_blob(ZODB.utils.p64(oid))
                     if blob in blobs:
