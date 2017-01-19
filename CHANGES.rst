@@ -1,7 +1,7 @@
 Changes
 -------
 
-0.12.1+md.3 (unreleased)
+0.12.1+md.3 (2017-01-19)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 - pack sql with DELETE statements does a COMMIT every 10k lines.
