@@ -4,8 +4,8 @@ Changes
 0.12.1+md.3 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Nothing changed yet.
-
+- pack sql with DELETE statements does a COMMIT every 10k lines.
+  only tested on postgres.
 
 0.12.1+md.2 (2016-09-21)
 ~~~~~~~~~~~~~~~~~~~~~~~~
