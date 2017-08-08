@@ -98,16 +98,16 @@ EXCEPT SELECT DISTINCT source_oid FROM links_to_root
     def linkedToOID(self, connection, oid, depth):
         cursor = connection.cursor()
         result = cursor.execute("""
-WITH RECURSIVE linked_to_oid (source_oid, target_oid, depth) AS (
-    SELECT source_oid, target_oid, 1
+WITH RECURSIVE linked_to_oid (source_oid, depth) AS (
+    SELECT source_oid, 1
     FROM links
     WHERE target_oid = ?
     UNION
-    SELECT link.source_oid, link.target_oid, target.depth + 1
+    SELECT link.source_oid, target.depth + 1
     FROM links AS link JOIN linked_to_oid AS target
         ON target.source_oid = link.target_oid
     WHERE target.depth < ?
-    ORDER BY link.target_oid
+    ORDER BY link.source_oid
 )
 SELECT DISTINCT source_oid, depth FROM linked_to_oid WHERE depth = ?
         """, (oid, depth, depth))
