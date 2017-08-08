@@ -132,6 +132,7 @@ setup(
             'zodbbrowser = zodbbrowser.standalone:main',
             'zodbcheck = zodbbrowser.check:main',
             'zodbsearch = zodbbrowser.search:main',
+            'zodblinks = zodbbrowser.links:main',
             'sqlpack = zodbbrowser.sqlpack:main',
         ],
         'z3c.autoinclude.plugin': [
