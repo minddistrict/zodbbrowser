@@ -10,8 +10,8 @@ fi
 
 database="$1"
 
-if test ! -d done; then
-    mkdir done;
+if test ! -d "done"; then
+    mkdir "done";
 fi
 
 for file in $(ls todo); do

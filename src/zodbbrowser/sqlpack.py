@@ -40,7 +40,7 @@ def main(args=None):
                       help='reference information computed by zodbcheck')
     parser.add_option('--blobs', metavar='BLOBS', dest='blobs',
                       help='directory where blobs are stored')
-    parser.add_option('--output', metavar='FILE.SQL', dest='output',
+    parser.add_option('--output', metavar='OUTPUT', dest='output',
                       help='Output directory', default='pack')
     opts, args = parser.parse_args(args)
     try:
