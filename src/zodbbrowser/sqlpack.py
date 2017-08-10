@@ -2,10 +2,15 @@ import logging
 import optparse
 import os
 import sys
+import pkg_resources
+import shutil
 
 import ZODB.blob
 import ZODB.utils
 from zodbbrowser.references import ReferencesDatabase
+
+
+DELETE_COUNT = 50000
 
 
 def list_all_blobs_in(base_dir):
@@ -35,10 +40,8 @@ def main(args=None):
                       help='reference information computed by zodbcheck')
     parser.add_option('--blobs', metavar='BLOBS', dest='blobs',
                       help='directory where blobs are stored')
-    parser.add_option('--output-sql', metavar='FILE.SQL', dest='outputsql',
-                      help='SQL output file', default='pack.sql')
-    parser.add_option('--output-sh', metavar='FILE.SH', dest='outputsh',
-                      help='shell output file', default='pack.sh')
+    parser.add_option('--output', metavar='FILE.SQL', dest='output',
+                      help='Output directory', default='pack')
     opts, args = parser.parse_args(args)
     try:
         refs = ReferencesDatabase(opts.refsdb)
@@ -46,27 +49,43 @@ def main(args=None):
         parser.error(error.args[0])
     blobs = list_all_blobs_in(opts.blobs)
     compute_blob = None
+    count_oid = 0
+    count_blobs = 0
+    filename_count = 1
+    sql = None
+    os.makedirs(opts.output)
+    shutil.copyfile(
+        pkg_resources.resource_filename('zodbbrowser', 'sql.sh'),
+        os.path.join(os.path.join(opts.output, 'sql.sh')))
+    os.makedirs(os.path.join(opts.output, 'todo'))
     if blobs:
         compute_blob = ZODB.blob.FilesystemHelper(
             opts.blobs).layout.oid_to_path
-    count_oid = 0
-    count_blobs = 0
-    with open(opts.outputsh, 'w') as shell:
+        shell = open(os.path.join(opts.output, 'blobs.sh'), 'w')
         shell.write('#!/usr/bin/env bash\n')
-        with open(opts.outputsql, 'w') as sql:
+    for oid in refs.getUnUsedOIDs():
+        count_oid += 1
+        if sql is None:
+            sql = open(os.path.join(
+                opts.output,
+                'todo',
+                'pack-{:06}.sql'.format(filename_count)), 'w')
+            filename_count += 1
             sql.write('BEGIN;\n')
-            for oid in refs.getUnUsedOIDs():
-                count_oid += 1
-                sql.write('DELETE FROM object_state WHERE zoid = {};\n'.format(
-                    oid))
-                if count_oid and count_oid % 10000 == 0:
-                    sql.write('COMMIT;\nBEGIN;\n')
-                if compute_blob:
-                    blob = compute_blob(ZODB.utils.p64(oid))
-                    if blob in blobs:
-                        count_blobs += 1
-                        blobs.remove(blob)
-                        shell.write('rm -rf {}\n'.format(blob))
+        sql.write('DELETE FROM object_state WHERE zoid = {};\n'.format(oid))
+        if count_oid and count_oid % DELETE_COUNT == 0:
             sql.write('COMMIT;\n')
-    print 'Found {} objects and {} blobs to remove.'.format(
-        count_oid, count_blobs)
+            sql.close()
+            sql = None
+        if compute_blob is not None:
+            blob = compute_blob(ZODB.utils.p64(oid))
+            if blob in blobs:
+                count_blobs += 1
+                blobs.remove(blob)
+                shell.write('rm -rf {}\n'.format(blob))
+    if sql is not None:
+        sql.write('COMMIT;\n')
+        sql.close()
+    if compute_blob is not None:
+        shell.close()
+    print 'Found {} objects and {} blobs.'.format(count_oid, count_blobs)
