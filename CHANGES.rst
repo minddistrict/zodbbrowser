@@ -4,7 +4,9 @@ Changes
 0.12.1+md.4 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Nothing changed yet.
+- Update pack script to create multiple small SQL files instead of huge one.
+
+- Add a script to explore record linked together from the command line.
 
 
 0.12.1+md.3 (2017-01-19)
