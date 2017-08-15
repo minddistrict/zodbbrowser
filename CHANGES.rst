@@ -1,8 +1,8 @@
 Changes
 -------
 
-0.12.1+md.4 (unreleased)
-~~~~~~~~~~~~~~~~~~~~~~~~
+1.0+md (2017-08-15)
+~~~~~~~~~~~~~~~~~~~
 
 - Update pack script to create multiple small SQL files instead of huge one.
 
