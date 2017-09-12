@@ -4,8 +4,8 @@ Changes
 1.0+md.2.dev0 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Nothing changed yet.
-
+- Update pack script to have the number of lines per SQL files
+  configurable on the command line.
 
 1.0+md (2017-08-15)
 ~~~~~~~~~~~~~~~~~~~

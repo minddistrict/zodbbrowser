@@ -20,5 +20,5 @@ for file in $(ls todo); do
         exit 1
     fi
     mv "todo/$file" "done/$file"
-    sleep 10
+    sleep 5
 done

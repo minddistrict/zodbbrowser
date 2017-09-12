@@ -10,9 +10,6 @@ import ZODB.utils
 from zodbbrowser.references import ReferencesDatabase
 
 
-DELETE_COUNT = 50000
-
-
 def list_all_blobs_in(base_dir):
     blobs = set()
     if not base_dir:
@@ -34,12 +31,15 @@ def main(args=None):
     parser = optparse.OptionParser(
         'usage: %prog [options]',
         prog='sqlpack',
-        description='Generate an SQL file with delete statements to remove '
-            'unused objects.')
+        description=(
+            'Generate an SQL file with delete statements to remove '
+            'unused objects.'))
     parser.add_option('--references', metavar='FILE.DB', dest='refsdb',
                       help='reference information computed by zodbcheck')
     parser.add_option('--blobs', metavar='BLOBS', dest='blobs',
                       help='directory where blobs are stored')
+    parser.add_option('--lines', metavar='NUMBER', dest='lines', type=int,
+                      help='Number of lines per file', default=50000)
     parser.add_option('--output', metavar='OUTPUT', dest='output',
                       help='Output directory', default='pack')
     opts, args = parser.parse_args(args)
@@ -73,7 +73,7 @@ def main(args=None):
             filename_count += 1
             sql.write('BEGIN;\n')
         sql.write('DELETE FROM object_state WHERE zoid = {};\n'.format(oid))
-        if count_oid and count_oid % DELETE_COUNT == 0:
+        if count_oid and count_oid % args.lines == 0:
             sql.write('COMMIT;\n')
             sql.close()
             sql = None
