@@ -63,6 +63,8 @@ def main(args=None):
             opts.blobs).layout.oid_to_path
         shell = open(os.path.join(opts.output, 'blobs.sh'), 'w')
         shell.write('#!/usr/bin/env bash\n')
+    else:
+        print 'Warning: no blobs detected.'
     for oid in refs.getUnUsedOIDs():
         count_oid += 1
         if sql is None:
