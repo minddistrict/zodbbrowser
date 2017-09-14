@@ -73,7 +73,7 @@ def main(args=None):
             filename_count += 1
             sql.write('BEGIN;\n')
         sql.write('DELETE FROM object_state WHERE zoid = {};\n'.format(oid))
-        if count_oid and count_oid % args.lines == 0:
+        if count_oid and count_oid % opts.lines == 0:
             sql.write('COMMIT;\n')
             sql.close()
             sql = None
