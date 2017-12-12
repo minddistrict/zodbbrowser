@@ -22,6 +22,21 @@ def list_all_blobs_in(base_dir):
     return blobs
 
 
+def read_manifest(manifest):
+    blobs = set()
+    with open(manifest, 'r') as stream:
+        for line in stream.readlines():
+            line = line.strip()
+            if not len(line):
+                continue
+            blob = os.path.dirname(line)
+            if not (len(blob) and blob.startswith('0x00')):
+                print 'This does not look like a blob directory to me.'
+                sys.exit(-1)
+            blobs.add(blob)
+    return blobs
+
+
 def main(args=None):
     logging.basicConfig(format="%(message)s")
 
@@ -38,6 +53,9 @@ def main(args=None):
                       help='reference information computed by zodbcheck')
     parser.add_option('--blobs', metavar='BLOBS', dest='blobs',
                       help='directory where blobs are stored')
+    parser.add_option('--blobs-manifest', metavar='MANIFEST',
+                      dest='blobs_manifest',
+                      help='result of "find 0x00 -type f" in blobs directory')
     parser.add_option('--lines', metavar='NUMBER', dest='lines', type=int,
                       help='Number of lines per file', default=50000)
     parser.add_option('--output', metavar='OUTPUT', dest='output',
@@ -47,7 +65,10 @@ def main(args=None):
         refs = ReferencesDatabase(opts.refsdb)
     except ValueError as error:
         parser.error(error.args[0])
-    blobs = list_all_blobs_in(opts.blobs)
+    if opts.blobs_manifest:
+        blobs = read_manifest(opts.blobs_manifest)
+    else:
+        blobs = list_all_blobs_in(opts.blobs)
     compute_blob = None
     count_oid = 0
     count_blobs = 0
@@ -63,6 +84,9 @@ def main(args=None):
             opts.blobs).layout.oid_to_path
         shell = open(os.path.join(opts.output, 'blobs.sh'), 'w')
         shell.write('#!/usr/bin/env bash\n')
+        shell.write('if ! test -d 0x00; then\n')
+        shell.write('   echo "Wrong directory."; exit 1\n')
+        shell.write('fi\n')
     else:
         print 'Warning: no blobs detected.'
     for oid in refs.getUnUsedOIDs():

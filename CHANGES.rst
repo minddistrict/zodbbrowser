@@ -7,6 +7,9 @@ Changes
 - Update pack script to have the number of lines per SQL files
   configurable on the command line.
 
+- Update pack script to be able to work with a manifest of all blobs
+  files instead of the files themselves.
+
 1.0+md (2017-08-15)
 ~~~~~~~~~~~~~~~~~~~
 
